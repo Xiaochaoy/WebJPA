@@ -6,6 +6,7 @@ import java.util.List;
 import controller.ArticleController;
 import controller.AuthorController;
 import controller.MagazineController;
+import controller.RolController;
 import database.ConnectionFactory;
 import model.*;
 import org.hibernate.HibernateException;
@@ -63,7 +64,7 @@ public class Main {
     return emf;
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     ArrayList<Magazine> revistes = new ArrayList();
 
     ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
@@ -73,7 +74,7 @@ public class Main {
     EntityManagerFactory entityManagerFactory = createEntityManagerFactory();
     //sessionObj = buildSessionFactory().openSession();
 
-
+    RolController rolController = new RolController(c, entityManagerFactory);
     AuthorController authorController = new AuthorController(c, entityManagerFactory);
     ArticleController articleController = new ArticleController(c, entityManagerFactory);
     MagazineController magazineController = new MagazineController(c, entityManagerFactory);
@@ -144,7 +145,17 @@ public class Main {
           e.printStackTrace();
         }
         break;
+      case 2:
+        System.out.println("1!!");
+        try{
+          List<Rol> roles = rolController.readRolFile("src/main/resources/lol.csv");
+          for (Rol r : roles) {
+            rolController.addRol(r);
+          }
 
+        }catch (NumberFormatException | IOException e){
+          e.printStackTrace();
+        }
       default:
         System.out.println("Adeu!!");
         System.exit(1);
