@@ -19,7 +19,6 @@ public class RolController {
     private Connection connection;
     private EntityManagerFactory entityManagerFactory;
     Scanner sc;
-    Menu menu = new Menu();
     List<Rol> roles ;
 
     public RolController(Connection connection, EntityManagerFactory entityManagerFactory) {
@@ -37,7 +36,6 @@ public class RolController {
         while((linea = br.readLine()) != null){
             List<String> listToken = getTokenList(linea, "\"");
              roles.add(new Rol(listToken.get(2)));
-
         }
 
         return roles;

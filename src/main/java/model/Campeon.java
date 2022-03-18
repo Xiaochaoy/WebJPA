@@ -8,6 +8,7 @@ import java.io.Serializable;
 @Table(name = "campeon")
 public class Campeon implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     int id;
     @Column(name = "nom",length = 20)
