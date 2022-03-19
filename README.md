@@ -15,7 +15,7 @@
 >
 > Tienes unas opciones que hacen:
 >
-> - borrar datos especificados
+> - Borrar datos especificados
 > - Insertar datos
 > - Poblar datos desde un fichero csv que he generado en el proyecto anterior
 > - Mostrar datos en distintas maneras
