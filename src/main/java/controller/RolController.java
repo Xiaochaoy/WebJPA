@@ -1,6 +1,6 @@
 package controller;
 
-import model.Article;
+import model.Campeon;
 import model.Rol;
 import view.Menu;
 
@@ -10,17 +10,23 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.StringTokenizer;
+import java.util.*;
 
+/**
+ * Esta clase sirve para controlar la tabla rol situada en mi base de datos
+ */
 public class RolController {
     private Connection connection;
     private EntityManagerFactory entityManagerFactory;
     Scanner sc;
     List<Rol> roles ;
+    Menu menu = new Menu();
 
+    /**
+     * Esto es el constructor de la clase
+     * @param connection recibe la coneccion hacia postgres
+     * @param entityManagerFactory recibe el entityManagerFactory
+     */
     public RolController(Connection connection, EntityManagerFactory entityManagerFactory) {
         this.connection = connection;
         this.entityManagerFactory = entityManagerFactory;
@@ -28,6 +34,12 @@ public class RolController {
         roles = new ArrayList<>();
     }
 
+    /**
+     * Este metodo sirve para leer el fichero, lo mete en una lista y lo devuelve
+     * @param file rebie la ruta del fichero
+     * @return devuelve una lista de Rol
+     * @throws IOException
+     */
     public List<Rol> readRolFile(String file) throws IOException {
 
         BufferedReader br = new BufferedReader(new FileReader(file));
@@ -41,6 +53,10 @@ public class RolController {
         return roles;
     }
 
+    /**
+     * Para añadir rol
+     * @param rol
+     */
     public void addRol(Rol rol) {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
@@ -49,6 +65,47 @@ public class RolController {
         em.close();
     }
 
+    /**
+     * Este metodo sirve para mostrar roles
+     */
+    public void showRols(){
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+        List<Rol> result = em.createQuery("from Rol", Rol.class).getResultList();
+        for (Rol rol : result) {
+            System.out.println(rol.toString());
+        }
+        em.getTransaction().commit();
+        em.close();
+    }
+
+    /**
+     * Este metodo sirve para modificar el rol de los campeones
+     */
+    public void modificarRol(){
+        String rol = menu.RolMenu(connection,entityManagerFactory).toUpperCase(Locale.ROOT);
+        System.out.println("Escribe la primera letra del campeon que quieras modificar ?");
+        String letra = sc.nextLine().toUpperCase(Locale.ROOT);
+        String sql = "from Campeon where nom like '" + letra + "%'";
+
+        EntityManager em = entityManagerFactory.createEntityManager();
+        em.getTransaction().begin();
+
+        List<Campeon> result = em.createQuery(sql, Campeon.class).getResultList();
+        for (Campeon campeon : result) {
+            campeon.setRol(new Rol(rol));
+            em.merge(campeon);
+        }
+        em.getTransaction().commit();
+        em.close();
+    }
+
+    /**
+     * Este metodo sirve para dividir una frase en trozos depediendo del separador
+     * @param string recibe una frase
+     * @param delimiters recibe cual es el separador
+     * @return devuelve un array de palabras separadas.
+     */
     private static List<String> getTokenList(String string, String delimiters) {
 
         List<String> listTokens = new ArrayList<String>();

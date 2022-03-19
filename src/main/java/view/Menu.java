@@ -3,19 +3,30 @@ package view;
 import controller.CampeonController;
 import controller.RolController;
 
+import javax.persistence.EntityManagerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 
+/**
+ * Esta clase sirve para mostrar menus
+ */
 public class Menu {
     private int option;
     private String opciones;
 
+    /**
+     * Este es un constructor y llama a la clase padre suyo(nose quien es)
+     */
     public Menu() {
         super();
     }
 
+    /**
+     * Este metodo sirve para mostrar un menu
+     * @return devuelte la opcion que elegiste en numero
+     */
     public int mainMenu() {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -57,8 +68,8 @@ public class Menu {
      * @param c recibe la coneccion
      * @return devuelve el rol que elegiste
      */
-    /*public String RolMenu(Connection c){
-        RolController rolController = new RolController(c);
+    public String RolMenu(Connection c, EntityManagerFactory entityManagerFactory){
+        RolController rolController = new RolController(c, entityManagerFactory);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         for(;;){
@@ -73,30 +84,25 @@ public class Menu {
             return opciones;
         }
     }
-*/
     /**
-     * Este metodo sirve para mostrar un menu de nombres de campeon
+     * Este metodo sirve para mostrar un menu de id y nombre de campeones
      * @param c recibe la coneccion
      * @return devuelve el nombre que elegiste
      */
-    /*public String NomMenu(Connection c){
-        CampeonController campeonController = new CampeonController(c);
+    public int NomMenu(Connection c, EntityManagerFactory entityManagerFactory){
+        CampeonController campeonController = new CampeonController(c, entityManagerFactory);
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         System.out.println("\n" + "Campeones: ");
         for(;;){
             campeonController.showCampeonNom();
             try {
-                opciones = br.readLine();
+                option = Integer.parseInt(br.readLine());
             } catch (NumberFormatException | IOException e) {
                 System.out.println("valor no vàlid");
                 e.printStackTrace();
             }
-            return opciones;
+            return option;
         }
     }
-
-
-
-*/
 }

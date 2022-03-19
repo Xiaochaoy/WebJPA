@@ -1,10 +1,7 @@
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import controller.*;
 import database.ConnectionFactory;
@@ -23,23 +20,15 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 
+/**
+ * Esta clase es la principal donde inicializas tu programa y muestra un menu
+ */
 public class Main {
 
-    static SessionFactory sessionFactoryObj;
-
-    private static SessionFactory buildSessionFactory() {
-        try {
-            StandardServiceRegistry standardRegistry = new StandardServiceRegistryBuilder()
-                    .configure("hibernate.cfg.xml").build();
-            Metadata metadata = new MetadataSources(standardRegistry).getMetadataBuilder().build();
-            return metadata.getSessionFactoryBuilder().build();
-
-        } catch (HibernateException he) {
-            System.out.println("Session Factory creation failure");
-            throw he;
-        }
-    }
-
+    /**
+     * Este metodo sirve para crear el Manager de Entity que esta Anotado en las clase.
+     * @return
+     */
     public static EntityManagerFactory createEntityManagerFactory() {
         EntityManagerFactory emf;
         try {
@@ -53,6 +42,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
+        Scanner sc = new Scanner(System.in);
         ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
         Connection c = connectionFactory.connect();
 
@@ -63,150 +53,87 @@ public class Main {
 
 
         Menu menu = new Menu();
-        int opcio;
-        opcio = menu.mainMenu();
+        int opcio = menu.mainMenu();
 
-        switch (opcio) {
-            case 1:
-                List<Rol> roles = rolController.readRolFile("src/main/resources/lol.csv");
-                for (Rol r : roles) {
-                    try {
-                        rolController.addRol(r);
-                    } catch (Exception e) {}
-                }
+        while (opcio > 0 && opcio < 14) {
+            switch (opcio) {
+                case 1:
+                    List<Rol> roles = rolController.readRolFile("src/main/resources/lol.csv");
+                    for (Rol r : roles) {
+                        try {
+                            rolController.addRol(r);
+                        } catch (Exception e) {
+                        }
+                    }
 
-                List<Campeon> campeons = campeonController.readCampeonFile("src/main/resources/lol.csv");
-                for (Campeon campeon : campeons) {
+                    List<Campeon> campeons = campeonController.readCampeonFile("src/main/resources/lol.csv");
+                    for (Campeon campeon : campeons) {
                         campeonController.addCampeon(campeon);
-                }
-                break;
-            case 2:
+                    }
+                    break;
+                case 2:
+                    campeonController.showCampeonPorRol();
+                    break;
+                case 3:
+                    campeonController.showCampeonCon();
+                    break;
+                case 4:
+                    campeonController.showCampeonPor();
+                    break;
+                case 5:
+                    campeonController.modificarCampeon();
+                    break;
+                case 6:
+                    rolController.modificarRol();
+                    break;
+                case 7:
+                    campeonController.borrarCampeon();
+                    break;
+                case 8:
+                    campeonController.borrarCampeonPorRol();
+                    break;
+                case 9:
+                    System.out.println("----------------------");
+                    System.out.println("Crear Rol");
+                    System.out.println("----------------------");
 
-                break;
-            case 3:
+                    System.out.println("Rol:");
+                    String rol = sc.nextLine().toUpperCase(Locale.ROOT);
 
-                break;
-            default:
-                System.out.println("Adeu!!");
-                System.exit(1);
-                break;
+                    rolController.addRol(new Rol(rol));
 
+                    break;
+                case 10:
+                    System.out.println("----------------------");
+                    System.out.println("Crear Campeon");
+                    System.out.println("----------------------");
+
+                    System.out.println("Nombre:");
+                    String nom = sc.nextLine().toUpperCase(Locale.ROOT);
+
+                    System.out.println("Elige un rol:");
+                    String role = menu.RolMenu(c, entityManagerFactory).toUpperCase(Locale.ROOT);
+
+                    System.out.println("Historia:");
+                    String historia = sc.nextLine();
+
+                    campeonController.addCampeon(new Campeon(nom, new Rol(role), historia));
+
+                    break;
+                case 11:
+                    campeonController.showCampeon();
+                    break;
+                case 12:
+                    rolController.showRols();
+                    break;
+                case 13:
+                    System.exit(1);
+                    break;
+                default:
+                    System.out.println("Introdueixi una de les opcions anteriors");
+                    break;
+            }
+            opcio = menu.mainMenu();
         }
     }
 }
-
-
-/*
-
-
-    static User userObj;
-    static Session sessionObj;
-    static SessionFactory sessionFactoryObj;
-
-    private static SessionFactory buildSessionFactory() {
-        // Creating Configuration Instance & Passing Hibernate Configuration File
-        Configuration configObj = new Configuration();
-        configObj.configure("hibernate.cfg.xml");
-
-        // Since Hibernate Version 4.x, ServiceRegistry Is Being Used
-        ServiceRegistry serviceRegistryObj = new StandardServiceRegistryBuilder().applySettings(configObj.getProperties()).build();
-
-        // Creating Hibernate SessionFactory Instance
-        sessionFactoryObj = configObj.buildSessionFactory(serviceRegistryObj);
-        return sessionFactoryObj;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(".......Hibernate Maven Example.......\n");
-        try {
-            sessionObj = buildSessionFactory().openSession();
-            sessionObj.beginTransaction();
-
-            for(int i = 101; i <= 105; i++) {
-                userObj = new User();
-                userObj.setUserid(i);
-                userObj.setUsername("Editor " + i);
-                userObj.setCreatedBy("Administrator");
-                userObj.setCreatedDate(new Date());
-
-                sessionObj.save(userObj);
-            }
-            System.out.println("\n.......Records Saved Successfully To The Database.......\n");
-
-            // Committing The Transactions To The Database
-            sessionObj.getTransaction().commit();
-        } catch(Exception sqlException) {
-            if(null != sessionObj.getTransaction()) {
-                System.out.println("\n.......Transaction Is Being Rolled Back.......");
-                sessionObj.getTransaction().rollback();
-            }
-            sqlException.printStackTrace();
-        } finally {
-            if(sessionObj != null) {
-                sessionObj.close();
-            }
-        }
-    }
-
-
-*/
-
-/*
-System.out.println("1!!");
-        try {
-
-          // authorController.printAutors(authorController.readAuthorsFile("src/main/resources/autors.txt"));
-        //
-
-         // for (Author a : authors) {
-         //   authorController.addAuthor(a);
-         // }
-
-          // magazineController.printMagazines(magazineController.readMagazinesFile("src/main/resources/revistes.txt"));
-          // magazineController.printMagazines();
-
-          List<Author> authors = authorController.readAuthorsFile("src/main/resources/autors.txt");
-          List<Magazine> magazines = articleController.readArticlesFile("src/main/resources/articles.txt", "src/main/resources/revistes.txt", "src/main/resources/autors.txt");
-          List<Article> articles = articleController.readArticlesFile("src/main/resources/articles.txt", "src/main/resources/autors.txt");
-
-          System.out.println("Revistes llegides des del fitxer");
-          for (int i = 0; i < magazines.size(); i++) {
-            System.out.println(magazines.get(i).toString()+"\n");
-            for (int j = 0; j < magazines.get(i).getArticles().size(); j++) {
-              Author author = magazines.get(i).getArticles().get(j).getAuthor();
-              authorController.addAuthor(author);
-
-              System.out.println("EL AUTOR:");
-              System.out.println(author);
-
-              Article article = magazines.get(i).getArticles().get(j);
-              article.setAuthor(author);
-
-              System.out.println("EL ARTICLE:");
-              System.out.println(article);
-
-              articleController.addArticle(article);
-            }
-
-            magazineController.addMagazine(magazines.get(i));
-          }
-
-/*
-          for (Magazine m : magazines) {
-            System.out.println(m);
-            magazineController.addMagazine(m);
-          }
-
-          for (Author a : authors) {
-            authorController.addAuthor(a);
-          }
-
-          for (Article ar : articles) {
-            articleController.addArticle(ar);
-          }
-
-        } catch (NumberFormatException | IOException e) {
-
-                e.printStackTrace();
-                }
-*/
