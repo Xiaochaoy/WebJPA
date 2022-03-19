@@ -23,4 +23,4 @@
 
 
 # JavaDoc
-[Javadoc.html](https://xiaochaoy.github.io/WebJDBC/)
+[Javadoc.html](https://xiaochaoy.github.io/WebJPA/)
