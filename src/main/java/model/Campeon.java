@@ -15,13 +15,13 @@ public class Campeon implements Serializable {
     @Column(name = "id")
     int id;
     @Column(name = "nom",length = 20)
-    String name;
+    String nom;
 
     @ManyToOne
     @JoinColumn(name = "rol")
     Rol rol;
 
-    @Column(name = "historia")
+    @Column(name = "historia", length = 999999)
     String historia;
 
 
@@ -33,7 +33,7 @@ public class Campeon implements Serializable {
      */
     public Campeon(String name, Rol rol, String historia){
         super();
-        this.name = name;
+        this.nom = name;
         this.rol = rol;
         this.historia = historia;
     }
@@ -65,16 +65,16 @@ public class Campeon implements Serializable {
      * Esto para pillar el nombre.
      * @return devuelve el nombre.
      */
-    public String getName() {
-        return name;
+    public String getNom() {
+        return nom;
     }
 
     /**
      * Esto para asignar un nombre.
      * @param name recibe el que le vas a poner a lla nombre.
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setNom(String name) {
+        this.nom = name;
     }
 
     /**
@@ -117,7 +117,7 @@ public class Campeon implements Serializable {
     public String toString() {
         return "Campeon{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", name='" + nom + '\'' +
                 ", rol='" + rol.toString() + '\'' +
                 ", historia='" + historia + '\'' +
                 '}';

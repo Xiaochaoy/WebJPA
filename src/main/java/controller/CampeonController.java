@@ -142,7 +142,7 @@ public class CampeonController {
         em.getTransaction().begin();
         List<Campeon> result = em.createQuery("from Campeon order by id", Campeon.class).getResultList();
         for (Campeon campeon : result) {
-            System.out.println(campeon.getId() + " " + campeon.getName());
+            System.out.println(campeon.getId() + " " + campeon.getNom());
         }
         em.getTransaction().commit();
         em.close();
@@ -159,7 +159,7 @@ public class CampeonController {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
         Campeon campeon = (Campeon) em.find(Campeon.class, id);
-        campeon.setName(newNom);
+        campeon.setNom(newNom);
         em.merge(campeon);
         em.getTransaction().commit();
         em.close();
