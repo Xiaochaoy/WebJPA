@@ -2,7 +2,7 @@
 
 > El proyecto consiste crear un base de datos con postgres para el proyecto que habiamos hecho (WebScrapping).
 >
-> He utilizado el JPA PostgreSQL Driver para conectar a mi base de datos que tengo creado en postgres desde intellij.
+> He utilizado el JPA Annotations PostgreSQL Driver para conectar a mi base de datos que tengo creado en postgres desde intellij.
 >
 > Mi proyecto esta basado de la practica JPAMagazinesAnnotations, tengo un fichero de sql para crear las tablas.
 
